@@ -24,6 +24,7 @@ Theta2 = reshape(nn_params((1 + (hidden_layer_size * (input_layer_size + 1))):en
 
 % Setup some useful variables
 m = size(X, 1);
+X = [ones(m,1) X];
          
 % You need to return the following variables correctly 
 J = 0;
@@ -38,6 +39,24 @@ Theta2_grad = zeros(size(Theta2));
 %         variable J. After implementing Part 1, you can verify that your
 %         cost function computation is correct by verifying the cost
 %         computed in ex4.m
+
+% calculate h(x)k
+% 1. hidden layer
+z2 = X * Theta1';
+a2 = sigmoid(z2);
+a2 = [ones(size(a2,1), 1) a2];
+% 2. output layer
+z3 = a2 * Theta2';
+output = sigmoid(z3);
+
+% create y matrix
+y_mat = zeros(num_labels, m);
+for i = 1:m
+  % create vector y
+  y_mat(y(i), i) = 1;
+endfor
+
+J = (1/m) * sum(diag(log(output) * -y_mat - log(1 - output) * (1 - y_mat)));
 %
 % Part 2: Implement the backpropagation algorithm to compute the gradients
 %         Theta1_grad and Theta2_grad. You should return the partial derivatives of
